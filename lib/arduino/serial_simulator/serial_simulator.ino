@@ -1,10 +1,15 @@
 //Based of the wiring code at http://wiring.org.co/learning/basics/humiditytemperaturesht15.html
 
+#define HUMIDITY_RELAY_PIN 6
+#define TEMPERATURE_RELAY_PIN 7
+
 int SHT_clockPin = 3;  // pin used for clock
 int SHT_dataPin  = 2;  // pin used for data
 int interval_time = 1000;
 
 void setup(){
+  pinMode(HUMIDITY_RELAY_PIN, OUTPUT);
+  pinMode(TEMPERATURE_RELAY_PIN, OUTPUT);
   Serial.begin(9600); // open serial at 9600 bps
 }
 
@@ -15,8 +20,9 @@ void loop(){
   Serial.print(temperature);
   Serial.print("|");
   Serial.println(humidity);
-  delay(interval_time); // wait  
+  delay(interval_time); // wait
 }
+
 
 float getTemperature(){
   //Return Temperature in Celsius
