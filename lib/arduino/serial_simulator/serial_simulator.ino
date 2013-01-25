@@ -1,11 +1,19 @@
-//Based of the wiring code at http://wiring.org.co/learning/basics/humiditytemperaturesht15.html
+// Based of the wiring code at http://wiring.org.co/learning/basics/humiditytemperaturesht15.html
+// serial tutorial: http://forums.trossenrobotics.com/tutorials/how-to-diy-128/complete-control-of-an-arduino-via-serial-3300/
+// serial tutorial: http://bildr.org/2011/01/arduino-serial/
 
 #define HUMIDITY_RELAY_PIN 6
 #define TEMPERATURE_RELAY_PIN 7
 
 int SHT_clockPin = 3;  // pin used for clock
 int SHT_dataPin  = 2;  // pin used for data
+
+int humidity_state = 0;
+int temperature_state = 0;
+
+
 int interval_time = 1000;
+int inbyte;
 
 void setup(){
   pinMode(HUMIDITY_RELAY_PIN, OUTPUT);
@@ -20,9 +28,39 @@ void loop(){
   Serial.print(temperature);
   Serial.print("|");
   Serial.println(humidity);
+  controlSwitches();
   delay(interval_time); // wait
 }
 
+void controlSwitches(){
+  while (Serial.available() > 0 && inbyte != '/') {
+    inbyte = Serial.read();
+    if (inbyte == '/'){
+      resetAllRelayStates();
+    } else {
+      switch (inbyte) {
+        case '6':
+          triggerPin(HUMIDITY_RELAY_PIN);
+          break;
+        case '7':
+          triggerPin(TEMPERATURE_RELAY_PIN);
+          break;
+      }
+    }
+  }
+  inbyte = 0;
+}
+
+void triggerPin(int pin){
+  digitalWrite(pin, HIGH); 
+}
+
+void resetAllRelayStates() {
+  digitalWrite(HUMIDITY_RELAY_PIN, LOW); 
+  digitalWrite(TEMPERATURE_RELAY_PIN, LOW); 
+  humidity_state = 0;
+  temperature_state = 0;
+}
 
 float getTemperature(){
   //Return Temperature in Celsius
