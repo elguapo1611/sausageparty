@@ -1,0 +1,106 @@
+<div id="status-graph" class="container marketing">
+  <div class="bg-graph" id="container"></div>
+  <div class="featurette">
+    <h2 class="featurette-heading"><span class="temperature muted large">80&deg;C</span> Current Temperature</h2>
+    <p>Target:<span class="temperature muted">70&deg;C</span></p>
+  </div>
+
+  <hr class="featurette-divider">
+
+  <div class="featurette">
+    <h2 class="featurette-heading"><span class="humidity muted large">80%</span> Current Humidity</h2>
+    <p>Target:<span class="humidity muted">70%</span></p>
+  </div>
+
+  <hr class="featurette-divider">
+</div><!-- /.container -->
+
+
+<% content_for :scripts do %>
+  <script>
+    $(function(){
+      var height = $("#status-graph").height();
+      $("#container").css("height", height);
+      Highcharts.setOptions({
+        global: {
+            useUTC: false
+        }
+      });
+
+      var chart;
+      chart = new Highcharts.Chart({
+        colors: ['#fea38a'],
+        chart: {
+          renderTo: 'container',
+          type: 'spline',
+          marginRight: 10,
+          events: {
+              load: function() {
+
+                  // set up the updating of the chart each second
+                  var series = this.series[0];
+                  setInterval(function() {
+                      var x = (new Date()).getTime(), // current time
+                          y = Math.random();
+                      series.addPoint([x, y], true, true);
+                  }, 1000);
+              }
+          }
+      },
+      title: {
+          text: 'Live random data'
+      },
+      xAxis: {
+          type: 'datetime',
+          tickPixelInterval: 150,
+          color: '#eee',
+          lineColor: '#fff',
+          tickColor: '#fff'
+      },
+      yAxis: {
+          gridLineWidth: 0,
+          title: {
+              text: 'Value'
+          },
+          plotLines: [{
+              value: 0,
+              width: 1,
+              color: '#fea38a',
+              lineColor: '#fff',
+              tickColor: '#fff'
+          }]
+      },
+      tooltip: {
+          formatter: function() {
+                  return '<b>'+ this.series.name +'</b><br/>'+
+                  Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                  Highcharts.numberFormat(this.y, 2);
+          }
+      },
+      legend: {
+          enabled: false
+      },
+      exporting: {
+          enabled: false
+      },
+      series: [{
+          name: 'Random data',
+          data: (function() {
+              // generate an array of random data
+              var data = [],
+                  time = (new Date()).getTime(),
+                  i;
+
+              for (i = -19; i <= 0; i++) {
+                  data.push({
+                      x: time + i * 1000,
+                      y: Math.random()
+                  });
+              }
+              return data;
+          })()
+        }]
+      });
+    });
+  </script>
+<% end %>
