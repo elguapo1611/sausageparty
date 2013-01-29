@@ -19,6 +19,7 @@ void setup(){
   pinMode(HUMIDITY_RELAY_PIN, OUTPUT);
   pinMode(TEMPERATURE_RELAY_PIN, OUTPUT);
   Serial.begin(9600); // open serial at 9600 bps
+  Serial.flush();
 }
 
 void loop(){

@@ -3,3 +3,7 @@
 
 en:
   hello: "Hello world"
+  time:
+    formats:
+      high_chart_format: "%Y-%m-%d %H:%M:%S"
+
