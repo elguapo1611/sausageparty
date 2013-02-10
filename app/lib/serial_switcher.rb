@@ -15,8 +15,11 @@ class SerialSwitcher
   def set_hardware_status
     schedule = Schedule.current_schedule
     turn_off_all
-    set_target_temperature_in_celcius_range(schedule.temperature_range)
-    set_target_humidity_range(schedule.humidity_range)
+    if schedule.present?
+      set_target_temperature_in_celcius_range(schedule.temperature_range)
+      set_target_humidity_range(schedule.humidity_range)
+    end
+    status
   end
 
   def status
