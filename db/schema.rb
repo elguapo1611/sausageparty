@@ -11,13 +11,24 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130121214701) do
+ActiveRecord::Schema.define(:version => 20130210182335) do
 
   create_table "data_points", :force => true do |t|
     t.float    "temperature_in_celcius", :null => false
     t.float    "humidity",               :null => false
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
+  end
+
+  create_table "schedules", :force => true do |t|
+    t.datetime "start_at",                   :null => false
+    t.datetime "end_at"
+    t.float    "min_temperature_in_celcius", :null => false
+    t.float    "max_temperature_in_celcius", :null => false
+    t.float    "min_humidity",               :null => false
+    t.float    "max_humidity",               :null => false
+    t.datetime "created_at",                 :null => false
+    t.datetime "updated_at",                 :null => false
   end
 
 end

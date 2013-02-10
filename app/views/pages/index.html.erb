@@ -1,14 +1,14 @@
 <div id="status-graph" class="container marketing">
   <div class="bg-graph" id="container"></div>
   <div class="featurette">
-    <h2 class="featurette-heading"><span class="temperature muted large">80&deg;C</span> Current Temperature</h2>
-    <p>Target:<span class="temperature muted">70&deg;C</span></p>
+    <h2 class="featurette-heading"><span class="temperature muted large"><%= @data_points.first.temperature_formatted.html_safe %></span> Current Temperature</h2>
+    <p>Target:<span class="temperature muted"></span></p>
   </div>
 
   <hr class="featurette-divider">
 
   <div class="featurette">
-    <h2 class="featurette-heading"><span class="humidity muted large">80%</span> Current Humidity</h2>
+    <h2 class="featurette-heading"><span class="humidity muted large"><%= @data_points.first.humidity %>%</span> Current Humidity</h2>
     <p>Target:<span class="humidity muted">70%</span></p>
   </div>
 
@@ -18,6 +18,7 @@
 <ul id="data" class="logs">
   <% @data_points.each do |data_point| %>
     <li data-temp="<%= data_point.temperature %>" data-humidity="<%= data_point.humidity %>" data-time="<%= data_point.timestamp %>">
+      <%= data_point.temperature_formatted.html_safe %>
     </li> 
   <% end %>
 </ul>
@@ -33,8 +34,24 @@
         }
       });
 
-      var chart;
-      chart = new Highcharts.Chart({
+      var chart, 
+          series,
+          series2;
+
+
+      function pollForChanges() {        
+        $.get("<%= pages_path(:format => :json, :created_at => Time.now) %>", function(d){
+          
+          // var x = (new Date()).getTime(), // current time
+          //     y = 70;
+
+          // series.addPoint([x, y], true, true);
+          // series2.addPoint([x, y + 1], true, true);
+
+        });
+      }
+
+      window.chart = new Highcharts.Chart({
         colors: ['#fea38a'],
         chart: {
           renderTo: 'container',
@@ -43,13 +60,13 @@
           events: {
               load: function() {
 
-                  // // set up the updating of the chart each second
-                  // var series = this.series[0];
-                  // setInterval(function() {
-                  //     var x = (new Date()).getTime(), // current time
-                  //         y = Math.random();
-                  //     series.addPoint([x, y], true, true);
-                  // }, 1000);
+
+                  // set up the updating of the chart each second
+                  series = this.series[0];
+                  series2 = this.series[1];
+                
+                  pollForChanges();
+                
               }
           }
       },
@@ -90,7 +107,8 @@
           enabled: false
       },
       series: [{
-          name: 'Random data',
+          color: '#297e96',
+          name: 'Humidity',
           data: (function() {
             var data = [];
             $("#data li").each(function(){
@@ -98,7 +116,22 @@
             });
             return data;
           })()
-        }]
+        },
+        {
+          color: '#964029',
+          name: 'Temperature',
+          data: (function() {
+            var data = [];
+            $("#data li").each(function(){
+              data.push({x:parseFloat($(this).attr("data-time")), y:parseFloat($(this).attr("data-temp"))})
+            });
+            return data;
+          })()
+        }
+
+
+
+        ]
       });
     });
   </script>

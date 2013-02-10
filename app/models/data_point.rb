@@ -6,6 +6,10 @@ class DataPoint < ActiveRecord::Base
     temperature_in_celcius
   end
 
+  def temperature_formatted
+    "#{temperature}&deg;C"
+  end
+
   def timestamp
     created_at.to_time.to_i
   end
