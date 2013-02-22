@@ -7,7 +7,7 @@ gem 'rails', '3.2.11'
 gem 'pg'
 gem 'serialport'
 gem 'hashie'
-gem 'resque-scheduler', :require => 'resque_scheduler'
+gem 'daemons'
 
 group :development do
   gem 'foreman'

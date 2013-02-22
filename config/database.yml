@@ -21,6 +21,4 @@ test:
 production:
   adapter: postgresql
   database: sausageparty_production
-  username: root
-  password:
   host: localhost
